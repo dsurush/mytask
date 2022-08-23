@@ -4,13 +4,13 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"mytasks"
+	"mytasks/pkg/cache"
 	"mytasks/pkg/handler"
 	"mytasks/pkg/repository"
 	"mytasks/pkg/service"
 	"os"
-
-	"github.com/spf13/viper"
 )
 
 func main() {
@@ -31,6 +31,9 @@ func main() {
 	if err != nil {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())
 	}
+
+	newCache := cache.NewCache(db, viper.GetDuration("cache.defaultExpiration"), viper.GetDuration("cache.cleanupInterval"))
+	go newCache.Refresh(viper.GetDuration("cache.refreshDuration"))
 
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)

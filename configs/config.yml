@@ -6,3 +6,9 @@ db:
     user: "postgres"
     dbname: "mytask"
     sslmode: "disable"
+
+cache:
+    defaultExpiration: 5000
+    cleanupInterval: 10000
+    expiration: 5000
+    refreshDuration: 5000
