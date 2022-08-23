@@ -77,7 +77,6 @@ func (c *Cache) FullToRam() error {
 		return err
 	}
 	for _, list := range lists {
-		//fmt.Println(list)
 		go c.Set(list.ID, list, viper.GetDuration("cache.expiration"))
 	}
 	return nil
@@ -91,7 +90,6 @@ func (c *Cache) Refresh(refreshTime time.Duration) {
 			err := c.FullToRam()
 			if err != nil {
 				logrus.Error("Problems with cache: %s", err.Error())
-				fmt.Println("Problems with cache: %s", err.Error())
 			}
 			fmt.Println("Updating cache")
 		}
