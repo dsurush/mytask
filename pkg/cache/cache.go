@@ -2,7 +2,6 @@ package cache
 
 import (
 	"errors"
-	"fmt"
 	"mytasks"
 	"sync"
 	"time"
@@ -97,10 +96,9 @@ func (c *Cache) Refresh(refreshTime time.Duration) {
 	err := c.FullToRam()
 	if err != nil {
 		logrus.Error("Problems with cache: %s", err.Error())
-
 	}
-	fmt.Println("Updating cache")
-	fmt.Println(len(c.items))
+	//	fmt.Println("Updating cache")
+	//	fmt.Println(fmt.Sprintf("adress cache: %v \n adress value: %v", &c, c))
 	ticker := time.NewTicker(refreshTime * time.Millisecond)
 	for {
 		select {
@@ -109,8 +107,8 @@ func (c *Cache) Refresh(refreshTime time.Duration) {
 			if err != nil {
 				logrus.Error("Problems with cache: %s", err.Error())
 			}
-			fmt.Println("Updating cache")
-			fmt.Println(len(c.items))
+			//			fmt.Println("Updating cache")
+			//			fmt.Println(len(c.items))
 		}
 	}
 }
