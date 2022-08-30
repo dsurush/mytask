@@ -47,6 +47,8 @@ func NewCache(db *sqlx.DB, defaultExpiration, cleanupInterval time.Duration) *Ca
 }
 
 func (c *Cache) GetItems() map[int64]Item {
+	c.Lock()
+	defer c.Unlock()
 	return c.items
 }
 
