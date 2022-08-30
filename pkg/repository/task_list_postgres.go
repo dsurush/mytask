@@ -1,12 +1,10 @@
 package repository
 
 import (
-	"fmt"
 	//"github.com/google/martian/log"
 	"github.com/jmoiron/sqlx"
 
 	"mytasks"
-	"strings"
 )
 
 type TaskListPostgres struct {
@@ -31,27 +29,6 @@ func (r *TaskListPostgres) Delete(id int) error {
 }
 
 func (r *TaskListPostgres) Update(id int, input mytasks.UpdateTaskInput) error {
-	setValues := make([]string, 0)
-	args := make([]interface{}, 0)
-	argId := 1
-
-	setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
-	args = append(args, *input.Title)
-	argId++
-
-	setValues = append(setValues, fmt.Sprintf("description=$%d", argId))
-	args = append(args, *input.Description)
-	argId++
-
-	setValues = append(setValues, fmt.Sprintf("done=$%d", argId))
-	args = append(args, *input.Done)
-	argId++
-
-	setQuery := strings.Join(setValues, ",")
-	query := fmt.Sprintf("UPDATE tasks SET %s WHERE id=$%d", setQuery, argId)
-	args = append(args, id)
-
-	fmt.Println(query)
-	_, err := r.db.Exec(query, args...)
+	_, err := r.db.Exec("UPDATE tasks SET title=$1, description=$2, done=$3 WHERE id=$4", input.Title, input.Description, input.Done, id)
 	return err
 }
