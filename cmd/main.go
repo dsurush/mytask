@@ -11,6 +11,7 @@ import (
 	"mytasks/pkg/repository"
 	"mytasks/pkg/service"
 	"os"
+	"time"
 )
 
 func main() {
@@ -34,10 +35,12 @@ func main() {
 
 	newCache := cache.NewCache(db, viper.GetDuration("cache.defaultExpiration"), viper.GetDuration("cache.cleanupInterval"))
 	go newCache.Refresh(viper.GetDuration("cache.refreshDuration"))
+	newCache.Set(10, 10, 0)
+	time.Sleep(time.Second * 5)
 
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
-	handlers := handler.NewHandler(services)
+	handlers := handler.NewHandler(services, newCache)
 
 	srv := new(mytasks.Server)
 	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {

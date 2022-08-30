@@ -3,12 +3,13 @@ package cache
 import (
 	"errors"
 	"fmt"
-	"github.com/jmoiron/sqlx"
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"mytasks"
 	"sync"
 	"time"
+
+	"github.com/jmoiron/sqlx"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 type Item struct {
@@ -45,6 +46,14 @@ func NewCache(db *sqlx.DB, defaultExpiration, cleanupInterval time.Duration) *Ca
 	return &cache
 }
 
+func (c *Cache) GetItems() map[int64]Item {
+	return c.items
+}
+
+func (c *Cache) GetDefaultExpiration() time.Duration {
+	return c.defaultExpiration
+}
+
 func (c *Cache) Set(key int64, value interface{}, duration time.Duration) {
 	var expiration int64
 	if duration == 0 {
@@ -77,12 +86,19 @@ func (c *Cache) FullToRam() error {
 		return err
 	}
 	for _, list := range lists {
-		go c.Set(list.ID, list, viper.GetDuration("cache.expiration"))
+		c.Set(list.ID, list, viper.GetDuration("cache.expiration"))
 	}
 	return nil
 }
 
 func (c *Cache) Refresh(refreshTime time.Duration) {
+	err := c.FullToRam()
+	if err != nil {
+		logrus.Error("Problems with cache: %s", err.Error())
+
+	}
+	fmt.Println("Updating cache")
+	fmt.Println(len(c.items))
 	ticker := time.NewTicker(refreshTime * time.Millisecond)
 	for {
 		select {
@@ -92,6 +108,7 @@ func (c *Cache) Refresh(refreshTime time.Duration) {
 				logrus.Error("Problems with cache: %s", err.Error())
 			}
 			fmt.Println("Updating cache")
+			fmt.Println(len(c.items))
 		}
 	}
 }

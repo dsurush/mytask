@@ -8,7 +8,7 @@ db:
     sslmode: "disable"
 
 cache:
-    defaultExpiration: 5000
-    cleanupInterval: 10000
-    expiration: 5000
-    refreshDuration: 5000
+    defaultExpiration: 600000000
+    cleanupInterval: 1000000
+    expiration: 600000000
+    refreshDuration: 500000000

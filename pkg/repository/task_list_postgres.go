@@ -35,27 +35,23 @@ func (r *TaskListPostgres) Update(id int, input mytasks.UpdateTaskInput) error {
 	args := make([]interface{}, 0)
 	argId := 1
 
-	if input.Title != nil {
-		setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
-		args = append(args, *input.Title)
-		argId++
-	}
+	setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
+	args = append(args, *input.Title)
+	argId++
 
-	if input.Description != nil {
-		setValues = append(setValues, fmt.Sprintf("description=$%d", argId))
-		args = append(args, *input.Title)
-		argId++
-	}
+	setValues = append(setValues, fmt.Sprintf("description=$%d", argId))
+	args = append(args, *input.Description)
+	argId++
 
-	if input.Done != nil {
-		setValues = append(setValues, fmt.Sprintf("done=$%d", argId))
-		args = append(args, *input.Title)
-		argId++
-	}
+	setValues = append(setValues, fmt.Sprintf("done=$%d", argId))
+	args = append(args, *input.Done)
+	argId++
+
 	setQuery := strings.Join(setValues, ",")
 	query := fmt.Sprintf("UPDATE tasks SET %s WHERE id=$%d", setQuery, argId)
 	args = append(args, id)
 
+	fmt.Println(query)
 	_, err := r.db.Exec(query, args...)
 	return err
 }

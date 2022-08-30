@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"mytasks/pkg/cache"
 	"mytasks/pkg/service"
 
 	"github.com/gin-gonic/gin"
@@ -8,10 +9,11 @@ import (
 
 type Handler struct {
 	services *service.Service
+	cache    *cache.Cache
 }
 
-func NewHandler(services *service.Service) *Handler {
-	return &Handler{services: services}
+func NewHandler(services *service.Service, cache *cache.Cache) *Handler {
+	return &Handler{services: services, cache: cache}
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {

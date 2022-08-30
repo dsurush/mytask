@@ -9,9 +9,9 @@ type TaskList struct {
 	Done        bool   `json:"done" db:"done"`
 }
 type UpdateTaskInput struct {
-	Title       *string `json:"title"`
-	Description *string `json:"description"`
-	Done        *bool   `json:"done"`
+	Title       *string `json:"title" binding:"required"`
+	Description *string `json:"description" binding:"required"`
+	Done        *bool   `json:"done" binding:"required"`
 }
 
 func (i UpdateTaskInput) Validate() error {
